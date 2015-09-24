@@ -98,10 +98,11 @@
      * 
      */
     function Touch(elem) {
-        this.evtList = {};
         this.elem = elem;
         this.listen();
     }
+    Touch.prototype.evtList = {};
+    Touch.prototype.touchEvt = touchEvt;
 
     /**
      * @method 事件触发器
@@ -112,7 +113,6 @@
         var self = this;
 
         //事件堆无该事件，结束触发
-        self.evtList = self.evtList || {};
         if(!self.evtList[evtName]) {
             return;
         }
