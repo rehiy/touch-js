@@ -97,28 +97,28 @@ body{
 
     bodyTouch.on('tap',function(e){
         $('.console3').append('tap'+I()+'<br/>');
-    }).on('doubleTap',function(e){
-        $('.console3').append('doubleTap'+I()+'<br/>');
-    }).on('longTap',function(e){
-        $('.console3').append('longTap'+I()+'<br/>');
-    }).on('swipeStart',function(e){
-        $('.console3').append('swipeStart'+I()+'<br/>');
+    }).on('doubletap',function(e){
+        $('.console3').append('doubletap'+I()+'<br/>');
+    }).on('longtap',function(e){
+        $('.console3').append('longtap'+I()+'<br/>');
+    }).on('swipestart',function(e){
+        $('.console3').append('swipestart'+I()+'<br/>');
     }).on('swipe',function(e){
         $('.console3').append('swipe'+I()+'<br/>');
-    }).on('swipeEnd',function(e){
-        $('.console3').append('swipeEnd'+I()+'<br/>');
-    }).on('swipeUp',function(e){
-        $('.console3').append('swipeUp'+I()+'<br/>');
-    }).on('swipeRight',function(e){
-        $('.console3').append('swipeRight'+I()+'<br/>');
-    }).on('swipeDown',function(e){
-        $('.console3').append('swipeDown'+I()+'<br/>');
-    }).on('swipeLeft',function(e){
-        $('.console3').append('swipeLeft'+I()+'<br/>');
+    }).on('swipeend',function(e){
+        $('.console3').append('swipeend'+I()+'<br/>');
+    }).on('swipeup',function(e){
+        $('.console3').append('swipeup'+I()+'<br/>');
+    }).on('swiperight',function(e){
+        $('.console3').append('swiperight'+I()+'<br/>');
+    }).on('swipedown',function(e){
+        $('.console3').append('swipedown'+I()+'<br/>');
+    }).on('swipeleft',function(e){
+        $('.console3').append('swipeleft'+I()+'<br/>');
     });
 
-    bodyTouch.on('swipeStart','.checkA',function(e){
-        $('.console1').append('swipeStart<br/>');
+    bodyTouch.on('swipestart','.checkA',function(e){
+        $('.console1').append('swipestart<br/>');
         $(this).css({
             'position':'relative',
             'background':'#ddd'
@@ -130,8 +130,8 @@ body{
             'left':e.moveX
         });
         return false;
-    }).on('swipeEnd','.checkA',function(e){
-        $('.console1').append('swipeEnd<br/>');
+    }).on('swipeend','.checkA',function(e){
+        $('.console1').append('swipeend<br/>');
         $(this).animate({
             'position':'static',
             'top':0,
@@ -143,18 +143,18 @@ body{
 
     bodyTouch.on('tap','.checkB',function(e){
         $('.console2').append('tap'+I()+'<br/>');
-    }).on('doubleTap','.checkB',function(e){
-        $('.console2').append('doubleTap'+I()+'<br/>');
-    }).on('longTap','.checkB',function(e){
-        $('.console2').append('longTap'+I()+'<br/>');
-    }).on('swipeUp','.checkB',function(e){
-        $('.console2').append('swipeUp'+I()+'<br/>');
-    }).on('swipeRight','.checkB',function(e){
-        $('.console2').append('swipeRight'+I()+'<br/>');
-    }).on('swipeDown','.checkB',function(e){
-        $('.console2').append('swipeDown'+I()+'<br/>');
-    }).on('swipeLeft','.checkB',function(e){
-        $('.console2').append('swipeLeft'+I()+'<br/>');
+    }).on('doubletap','.checkB',function(e){
+        $('.console2').append('doubletap'+I()+'<br/>');
+    }).on('longtap','.checkB',function(e){
+        $('.console2').append('longtap'+I()+'<br/>');
+    }).on('swipeup','.checkB',function(e){
+        $('.console2').append('swipeup'+I()+'<br/>');
+    }).on('swiperight','.checkB',function(e){
+        $('.console2').append('swiperight'+I()+'<br/>');
+    }).on('swipedown','.checkB',function(e){
+        $('.console2').append('swipedown'+I()+'<br/>');
+    }).on('swipeleft','.checkB',function(e){
+        $('.console2').append('swipeleft'+I()+'<br/>');
     });
 
     $('.consoleCnt').click(function(){

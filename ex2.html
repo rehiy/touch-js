@@ -26,24 +26,24 @@
       <h3>基本事件</h3>
       <ul>
         <li>轻击<small>tap</small>：触摸一次屏幕，需要完成手指从放下到抬起，且中途无移动。</li>
-        <li>双击<small>doubleTap</small>：快速触摸两次屏幕。</li>
-        <li>长按<small>longTap</small>：手指长时间按下不松，触发此事件。</li>
-        <li>上划<small>swipeUp</small>：手指快速向上滑动。</li>
-        <li>右划<small>swipeRight</small>：手指快速向右滑动。</li>
-        <li>下划<small>swipeDown</small>：手指快速向下滑动。</li>
+        <li>双击<small>doubletap</small>：快速触摸两次屏幕。</li>
+        <li>长按<small>longtap</small>：手指长时间按下不松，触发此事件。</li>
+        <li>上划<small>swipeup</small>：手指快速向上滑动。</li>
+        <li>右划<small>swiperight</small>：手指快速向右滑动。</li>
+        <li>下划<small>swipedown</small>：手指快速向下滑动。</li>
         <li>左划<small>swipeleft</small>：手指快速向左滑动。</li>
       </ul>
 
       <h3>高级事件</h3>
       <ul>
-        <li>滑动开始<small>swipeStart</small>：手指落下屏幕一瞬间即会触发此事件。</li>
+        <li>滑动开始<small>swipestart</small>：手指落下屏幕一瞬间即会触发此事件。</li>
         <li>滑动<small>swipe</small>：手指在屏幕上移动时，会持续触发此事件。</li>
-        <li>滑动结束<small>swipeEnd</small>：手指离开屏幕一瞬间即会触发此事件。</li>
+        <li>滑动结束<small>swipeend</small>：手指离开屏幕一瞬间即会触发此事件。</li>
       </ul>
 
       <h3>左划删除</h3>
       <p>移动交互中常用的删除手势，用于删除列表中的对象。</p>
-      <p>相关事件：左划<small>swipeLeft</small>、右划<small>swipeRight</small>、轻击<small>tap</small></p>
+      <p>相关事件：左划<small>swipeleft</small>、右划<small>swiperight</small>、轻击<small>tap</small></p>
       <div class="list-group" id="listGroupA">
         <div class="list-item">
           <div class="list-item-body">
@@ -55,11 +55,11 @@
         </div>
       </div>
 <pre><code>touch(document.getElementById('listGroupA'))
-.on('swipeLeft','.list-item',function(){
+.on('swipeleft','.list-item',function(){
   addClass(this,'list-item-status-del');
   return false;
 })
-.on('swipeRight','.list-item',function(){
+.on('swiperight','.list-item',function(){
   removeClass(this,'list-item-status-del');
   return false;
 })
@@ -69,7 +69,7 @@
 
       <h3>长按删除</h3>
       <p>移动交互中另一种常用的删除动作，将删除功能已藏在界面不可见的位置以避免误操作。</p>
-      <p>相关事件：长按<small>longTap</small></p>
+      <p>相关事件：长按<small>longtap</small></p>
       <div class="list-group" id="listGroupB">
         <div class="list-item">
           <div class="list-item-body">
@@ -78,19 +78,19 @@
         </div>
       </div>
 <pre><code>touch(document.getElementById('listGroupB'))
-.on('longTap','.list-item',function(){
+.on('longtap','.list-item',function(){
   alert('这只是个demo！');
 });</code></pre>
 
       <h3>自由拖动</h3>
       <p>UI组件中可能会有悬浮类工具，需要可以随意拖动。</p>
-      <p>相关事件：拖动开始<small>swipeStart</small>、拖动中<small>swipe</small>、拖动结束<small>swipeEnd</small></p>
+      <p>相关事件：拖动开始<small>swipestart</small>、拖动中<small>swipe</small>、拖动结束<small>swipeend</small></p>
       <div class="assistive-touch-cnt">
         <div class="assistiveTouch" id="assistiveTouch"><span></span></div>
       </div>
 <pre><code>var start_left,start_top;
 touch(document.getElementById('assistiveTouch'))
-.on('swipeStart',function(e){
+.on('swipestart',function(e){
   start_left = parseInt(this.style.left) || 0;
   start_top = parseInt(this.style.top) || 0;
   this.style.transition = 'none';
@@ -99,7 +99,7 @@ touch(document.getElementById('assistiveTouch'))
   this.style.left = (start_left + e.moveX) + 'px';
   this.style.top = (start_top + e.moveY) + 'px';
   return false;
-}).on('swipeEnd',function(e){
+}).on('swipeend',function(e){
   this.style.transition = '.1s';
   this.style.left = '0px';
   this.style.top = '0px';
@@ -108,7 +108,7 @@ touch(document.getElementById('assistiveTouch'))
 
       <h3>单向拖动</h3>
       <p>UI组件中可能会有进度选择、或数量配置类组件，需要用到单向拖动。</p>
-      <p>相关事件：拖动开始<small>swipeStart</small>、拖动中<small>swipe</small>、拖动结束<small>swipeEnd</small></p>
+      <p>相关事件：拖动开始<small>swipestart</small>、拖动中<small>swipe</small>、拖动结束<small>swipeend</small></p>
       <div class="progress-cnt" id="progressA">
         <div class="progress-bar">0%</div>
       </div>
@@ -119,13 +119,13 @@ function rangeControl(num,max){
   return Math.min(num,max);
 }
 touch(elem)
-.on('swipeStart','.progress-bar',function(e){
+.on('swipestart','.progress-bar',function(e){
   start_left = parseInt(this.style.left) || 0;
   this.innerHTML = '';
 }).on('swipe','.progress-bar',function(e){
   this.style.left = rangeControl(start_left + e.moveX,elem.clientWidth - this.clientWidth) + 'px';
   return false;
-}).on('swipeEnd','.progress-bar',function(e){
+}).on('swipeend','.progress-bar',function(e){
   this.innerHTML = Math.ceil(rangeControl(start_left + (e.moveX||0),elem.clientWidth - this.clientWidth)/(elem.clientWidth - this.clientWidth) * 100) + '%';
   return false;
 });</code></pre>
@@ -139,20 +139,20 @@ function rangeControl(num,max){
   return Math.min(num,max);
 }
 touch(elem)
-.on('swipeStart','.progress-bar',function(e){
+.on('swipestart','.progress-bar',function(e){
   start_top = parseInt(this.style.top) || 0;
   this.innerHTML = '';
 }).on('swipe','.progress-bar',function(e){
   this.style.top = rangeControl(start_top + e.moveY,elem.clientHeight - this.clientHeight) + 'px';
   return false;
-}).on('swipeEnd','.progress-bar',function(e){
+}).on('swipeend','.progress-bar',function(e){
   this.innerHTML = Math.ceil(rangeControl(start_top + (e.moveY||0),elem.clientHeight - this.clientHeight)/(elem.clientHeight - this.clientHeight) * 100) + '%';
   return false;
 });</code></pre>
 
       <h3>限制性拖动</h3>
       <p>UI组件中可能会有进度选择、或数量配置类组件，需要用到单向拖动。</p>
-      <p>相关事件：拖动开始<small>swipeStart</small>、拖动中<small>swipe</small>、拖动结束<small>swipeEnd</small></p>
+      <p>相关事件：拖动开始<small>swipestart</small>、拖动中<small>swipe</small>、拖动结束<small>swipeend</small></p>
       <div class="progress-cnt" id="progressC">
         <div class="progress-bar"></div>
       </div>
@@ -164,7 +164,7 @@ function rangeControl(num,max){
   return Math.min(num,max);
 }
 touch(elem)
-.on('swipeStart','.progress-bar',function(e){
+.on('swipestart','.progress-bar',function(e){
   start_left = parseInt(this.style.left) || 0;
   start_top = parseInt(this.style.top) || 0;
   this.innerHTML = '';
@@ -172,7 +172,7 @@ touch(elem)
   this.style.left = rangeControl(start_left + e.moveX,elem.clientWidth - this.clientWidth) + 'px';
   this.style.top = rangeControl(start_top + e.moveY,elem.clientHeight - this.clientHeight) + 'px';
   return false;
-}).on('swipeEnd','.progress-bar',function(e){
+}).on('swipeend','.progress-bar',function(e){
   return false;
 });</code></pre>
 

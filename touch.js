@@ -37,9 +37,9 @@
      */
     function swipeDirection(x1, x2, y1, y2) {
         if(Math.abs(x1 - x2) >= Math.abs(y1 - y2)) {
-            return x1 - x2 > 0 ? 'Left': 'Right';
+            return x1 - x2 > 0 ? 'left': 'right';
         }
-        return y1 - y2 > 0 ? 'Up': 'Down';
+        return y1 - y2 > 0 ? 'up': 'down';
     }
 
     /**
@@ -98,11 +98,10 @@
      * 
      */
     function Touch(elem) {
+        this.evtList = {};
         this.elem = elem;
         this.listen();
     }
-    Touch.prototype.evtList = {};
-    Touch.prototype.touchEvt = touchEvt;
 
     /**
      * @method 事件触发器
@@ -186,7 +185,7 @@
         var lastEvent = null;
 
         //轻击事件的延时器
-        var tap, longTap;
+        var tap, longtap;
 
         //断定事件为轻击事件
         function emitTap() {
@@ -195,21 +194,21 @@
         }
 
         //断定事件为长按事件
-        function emitLongTap() {
+        function emitLongtap() {
             touchCancel();
-            self.trigger('longTap', lastEvent);
+            self.trigger('longtap', lastEvent);
         }
 
         //断定事件为两次轻击事件
-        function emitDoubleTap() {
+        function emitDoubletap() {
             touchCancel();
-            self.trigger('doubleTap', lastEvent);
+            self.trigger('doubletap', lastEvent);
         }
 
         //单次用户操作结束
         function touchCancel() {
             doTouch = doSwipe = 0;
-            clearTimeout(longTap);
+            clearTimeout(longtap);
             clearTimeout(tap);
         }
 
@@ -225,8 +224,8 @@
             y1 = eventPostion(e).pageY;
             x2 = y2 = 0;
             //注册长按事件
-            clearTimeout(longTap);
-            longTap = setTimeout(emitLongTap, 600);
+            clearTimeout(longtap);
+            longtap = setTimeout(emitLongtap, 600);
         }
 
         //手指移动
@@ -245,8 +244,8 @@
             //断定此次事件为移动事件
             if(Math.abs(x1 - x2) > 2 || Math.abs(y1 - y2) > 2) {
                 if(doSwipe === 0) {
-                    clearTimeout(longTap);//放弃长按事件
-                    self.trigger('swipeStart', e);
+                    clearTimeout(longtap);//放弃长按事件
+                    self.trigger('swipestart', e);
                     doSwipe = 1;
                 }
             }
@@ -269,18 +268,18 @@
                 touchCancel();//终止触摸
                 var direction = swipeDirection(x1, x2, y1, y2);
                 self.trigger('swipe' + direction, e);
-                self.trigger('swipeEnd', e);
+                self.trigger('swipeend', e);
                 return;
             }
             //获取当前时间
             var now = new Date();
-            //若未监听doubleTap，直接响应tap
-            if(!self.evtList.doubleTap || !self.evtList.doubleTap.length) {
+            //若未监听doubletap，直接响应tap
+            if(!self.evtList.doubletap || !self.evtList.doubletap.length) {
                 emitTap();
             } else if(now - endTouchTime > 200) {
                 tap = setTimeout(emitTap, 190);
             } else {
-                emitDoubleTap();
+                emitDoubletap();
             }
             //触发监听函数
             endTouchTime = now;
