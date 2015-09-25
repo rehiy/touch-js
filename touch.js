@@ -8,27 +8,11 @@
 (function() {
 
     /**
-     * 获取触摸事件名称
-     */
-    var touchEvt = (function() {
-        if('ontouchstart' in window) {
-           return ['touchstart', 'touchmove', 'touchend', 'touchcancel'];
-        }
-        if('onpointerdown' in window) {
-           return ['pointerdown', 'pointermove', 'pointerup', 'pointercancel'];
-        }
-        if('onMSPointerDown' in window) {
-            return touchEvt = ['MSPointerDown', 'MSPointerMove', 'MSPointerUp', 'MSPointerCancel'];
-        }
-        return ['mousedown', 'mousemove', 'mouseup', 'mouseout'];
-    })();
-
-    /**
      * 判断是否拥有某个class
      */
-    function hasClass(elem, classSingle) {
-        return elem.className.match(
-            new RegExp('(\\s|^)' + classSingle + '(\\s|$)')
+    function hasClass(dom, name) {
+        return dom.className.match(
+            new RegExp('(\\s|^)' + name + '(\\s|$)')
         );
     }
 
@@ -66,7 +50,7 @@
      * @param object   指向的element
      * @param object   原生event对象
      */
-    function eventCallback(name, fn, elem, e) {
+    function eventCallback(name, fn, d, e) {
         var ep = eventPostion(e);
         //增加交互初始位置及移动距离
         if(name.match(/^swipe/) && e.startPosition) {
@@ -79,7 +63,7 @@
         ep.type = name;
         ep.target = e.target;
         //执行绑定事件的回调，并记录返回值
-        var result = fn.call(elem, ep);
+        var result = fn.call(d, ep);
         if(result !== false) {
             return result;
         }
@@ -97,66 +81,82 @@
      * Touch基础类
      * 
      */
-    function Touch(elem) {
-        this.evtList = {};
-        this.elem = elem;
+    var Touch = function(dom) {
+        this.target = dom;
+        this.events = {};
         this.listen();
-    }
+    };
+
+    /**
+     * 获取触摸事件名称
+     */
+    var TouchEvent = (function() {
+        if('ontouchstart' in window) {
+           return ['touchstart', 'touchmove', 'touchend', 'touchcancel'];
+        }
+        if('onpointerdown' in window) {
+           return ['pointerdown', 'pointermove', 'pointerup', 'pointercancel'];
+        }
+        if('onMSPointerDown' in window) {
+            return TouchEvent = ['MSPointerDown', 'MSPointerMove', 'MSPointerUp', 'MSPointerCancel'];
+        }
+        return ['mousedown', 'mousemove', 'mouseup', 'mouseout'];
+    })();
 
     /**
      * @method 事件触发器
      * @param string 事件名
      * @param object 原生event对象
      */
-    Touch.prototype.trigger = function(evtName, e) {
+    Touch.prototype.trigger = function(name, e) {
         var self = this;
 
         //事件堆无该事件，结束触发
-        if(!self.evtList[evtName]) {
+        if(!self.events[name]) {
             return;
         }
 
         //记录尚未被执行掉的事件绑定
-        var evtRest = self.evtList[evtName];
-        var evtList, classStr, callback, i;
+        var restev = self.events[name];
+        var events, classStr, callback, i;
 
         //从事件源target开始向上冒泡
         var target = e.target;
         while(1) {
             //若没有需要执行的事件，结束冒泡
-            if(!evtRest.length) {
+            if(!restev.length) {
                 return;
             }
             //若已经冒泡至顶，检测顶级绑定，结束冒泡
-            if(!target || target === self.elem) {
+            if(!target || target === self.target) {
                 //遍历剩余所有事件绑定
-                for(i = 0; i < evtRest.length; i++) {
-                    callback = evtRest[i]['fn'];
-                    classStr = evtRest[i]['className'];
+                for(i = 0; i < restev.length; i++) {
+                    callback = restev[i]['fn'];
+                    classStr = restev[i]['className'];
                     //未指定事件委托，直接执行
                     if(classStr === null) {
-                        eventCallback(evtName, callback, target, e);
+                        eventCallback(name, callback, target, e);
                     }
                 }
                 return;
             }
             //当前需要校验的事件集
-            evtList = evtRest;
+            events = restev;
             //置空尚未执行掉的事件集
-            evtRest = [];
+            restev = [];
             //遍历事件所有绑定
-            for(i = 0; i < evtList.length; i++) {
-                callback = evtList[i]['fn'];
-                classStr = evtList[i]['className'];
+            for(i = 0; i < events.length; i++) {
+                callback = events[i]['fn'];
+                classStr = events[i]['className'];
                 //符合事件委托，执行
                 if(hasClass(target, classStr)) {
                     //返回false停止事件冒泡及后续事件，其余继续执行
-                    if(eventCallback(evtName, callback, target, e) === false) {
+                    if(eventCallback(name, callback, target, e) === false) {
                         return;
                     }
                 } else {
                     //不符合执行条件，压回到尚未执行掉的列表中
-                    evtRest.push(evtList[i]);
+                    restev.push(events[i]);
                 }
             }
             //向上冒泡
@@ -187,22 +187,28 @@
         //轻击事件的延时器
         var tap, longtap;
 
-        //断定事件为轻击事件
+        //断定为轻击事件
         function emitTap() {
             touchCancel();
             self.trigger('tap', lastEvent);
         }
 
-        //断定事件为长按事件
+        //断定为长按事件
         function emitLongtap() {
             touchCancel();
             self.trigger('longtap', lastEvent);
         }
 
-        //断定事件为两次轻击事件
+        //断定为两次轻击事件
         function emitDoubletap() {
             touchCancel();
             self.trigger('doubletap', lastEvent);
+        }
+
+        //断定为滑动事件
+        function emitSwipeDirection() {
+            var direction = swipeDirection(x1, x2, y1, y2);
+            self.trigger('swipe' + direction, lastEvent);
         }
 
         //单次用户操作结束
@@ -244,9 +250,13 @@
             //断定此次事件为移动事件
             if(Math.abs(x1 - x2) > 2 || Math.abs(y1 - y2) > 2) {
                 if(doSwipe === 0) {
+                    doSwipe = 2;
                     clearTimeout(longtap);//放弃长按事件
-                    self.trigger('swipestart', e);
+                    self.trigger('swipestart', e);//这里才开始
+                }
+                if(doSwipe === 2 && new Date() - doTouchTime > 650) {
                     doSwipe = 1;
+                    emitSwipeDirection();
                 }
             }
             //触发监听函数
@@ -259,22 +269,24 @@
                 return;
             }
             doTouch = 1;
-            //缓存事件
+            //解决touchend不提供touches问题
             e.startPosition = lastEvent.startPosition;
             e.lastTouches = lastEvent.touches;
-            lastEvent = e;
-            //断定此次事件为移动手势
-            if(doSwipe === 1) {
-                touchCancel();//终止触摸
-                var direction = swipeDirection(x1, x2, y1, y2);
-                self.trigger('swipe' + direction, e);
+            lastEvent = e;//缓存事件
+            //断定为移动手势
+            if(doSwipe > 0) {
+                if(doSwipe === 2) {
+                    doSwipe = 1;
+                    emitSwipeDirection();
+                }
+                touchCancel();
                 self.trigger('swipeend', e);
                 return;
             }
             //获取当前时间
             var now = new Date();
             //若未监听doubletap，直接响应tap
-            if(!self.evtList.doubletap || !self.evtList.doubletap.length) {
+            if(!self.events.doubletap || !self.events.doubletap.length) {
                 emitTap();
             } else if(now - endTouchTime > 200) {
                 tap = setTimeout(emitTap, 190);
@@ -288,10 +300,10 @@
         /**
          * 对开始手势的监听
          */
-        self.elem.addEventListener(touchEvt[0], touchStart);
-        self.elem.addEventListener(touchEvt[1], touchMove);
-        self.elem.addEventListener(touchEvt[2], touchEnd);
-        self.elem.addEventListener(touchEvt[3], touchEnd);
+        self.target.addEventListener(TouchEvent[3], touchEnd);
+        self.target.addEventListener(TouchEvent[2], touchEnd);
+        self.target.addEventListener(TouchEvent[1], touchMove);
+        self.target.addEventListener(TouchEvent[0], touchStart);
 
     };
 
@@ -301,7 +313,7 @@
      * @param string 事件委托至某个class（可选）
      * @param function 符合条件的事件被触发时需要执行的回调函数 
      **/
-    Touch.prototype.on = function(eventList, fn, x) {
+    Touch.prototype.on = function(names, fn, x) {
 
         //捕获可变参数
         var className = null;
@@ -311,16 +323,16 @@
         }
 
         //检测callback是否合法,事件名参数是否存在·
-        if(eventList && typeof(fn) === 'function') {
-            eventList = eventList.split(/\s+/);
-            for(var i = 0, evtName; i < eventList.length; i++) {
-                evtName = eventList[i];
+        if(names && typeof(fn) === 'function') {
+            names = names.split(/\s+/);
+            for(var i = 0, name; i < names.length; i++) {
+                name = names[i];
                 //动态创建事件堆
-                if(!this.evtList[evtName]) {
-                    this.evtList[evtName] = [];
+                if(!this.events[name]) {
+                    this.events[name] = [];
                 }
                 //将事件推入事件堆
-                this.evtList[evtName].push({
+                this.events[name].push({
                     className: className,
                     fn: fn
                 });
@@ -333,8 +345,8 @@
     };
 
     //对外提供接口
-    window.touch = function(elem) {
-        return new Touch(elem);
+    window.touch = function(dom) {
+        return new Touch(dom);
     };
 
 })();
