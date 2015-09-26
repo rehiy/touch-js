@@ -225,7 +225,7 @@
             //事件开始
             doTouch = 2;
             doTouchTime = new Date();
-            //初始化坐标
+            //记录起始坐标
             x1 = eventPostion(e).pageX;
             y1 = eventPostion(e).pageY;
             x2 = y2 = 0;
@@ -241,10 +241,10 @@
             }
             //缓存事件
             lastEvent = e;
-            //记录坐标信息
             lastEvent.startPosition = {
                 pageX: x1, pageY: y1
             };
+            //更新结束坐标
             x2 = eventPostion(e).pageX;
             y2 = eventPostion(e).pageY;
             //断定此次事件为移动事件
@@ -271,10 +271,13 @@
                 return;
             }
             doTouch = 1;
-            //解决touchend不提供touches问题
-            e.startPosition = lastEvent.startPosition;
-            e.lastTouches = lastEvent.touches;
-            lastEvent = e;//缓存事件
+            //修正touchend事件
+            e.lastTouches = lastEvent.touches;//缓存事件
+            //缓存事件
+            lastEvent = e;
+            lastEvent.startPosition = {
+                pageX: x1, pageY: y1
+            };
             //断定为移动手势
             if(doSwipe > 0) {
                 if(doSwipe === 2) {
