@@ -205,7 +205,7 @@
             self.trigger('doubletap', lastEvent);
         }
 
-        //断定为滑动事件
+        //断定为划动事件
         function emitSwipeDirection() {
             var direction = swipeDirection(x1, x2, y1, y2);
             self.trigger('swipe' + direction, lastEvent);
@@ -250,17 +250,19 @@
             //断定此次事件为移动事件
             if(Math.abs(x1 - x2) > 2 || Math.abs(y1 - y2) > 2) {
                 if(doSwipe === 0) {
-                    doSwipe = 2;
+                    doSwipe = 2;//划动开始
                     clearTimeout(longtap);//放弃长按事件
-                    self.trigger('swipestart', e);//这里才开始
+                    self.trigger('swipestart', e);//开始
                 }
                 if(doSwipe === 2 && new Date() - doTouchTime > 650) {
-                    doSwipe = 1;
+                    doSwipe = 1;//划动中
                     emitSwipeDirection();
                 }
             }
-            //触发监听函数
-            self.trigger('swipe', e);
+            //划动中
+            if(doSwipe > 0) {
+                self.trigger('swipe', e);
+            }
         }
 
         //触摸结束
