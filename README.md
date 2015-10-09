@@ -30,12 +30,12 @@ touch(document.getElementById('toucher'))
 })
 //长按事件
 .on('longtap',function(e) {
-	console.log(this, e);
+    console.log(this, e);
 })
 //委托轻击事件
 .on('tap', '.class', function(e) {
-	console.log(this, e);
-	return false
+    console.log(this, e);
+    return false
 });
 ```
 
@@ -50,7 +50,3 @@ touch(document.getElementById('toucher'))
 #演示程序
 
 请使用移动设备或使用调试工具模拟移动设备查看 [demo](http://anrip.github.io/TouchJs/)
-
-#鸣谢
-
-https://github.com/bh-lay
