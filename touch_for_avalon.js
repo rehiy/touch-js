@@ -1,11 +1,8 @@
 /**
- * Plugin for Avalon
+ * Plugin for Avalon 1.5.x
  */
 
 (function() {
-
-    var handle = avalon.bindingHandlers.on;
-    //var handle = avalon.directives.on;
 
     var bthook = function(data) {
         setTimeout(function() {
@@ -15,11 +12,10 @@
         var element = data.element;
         var callback = function(ev, args) {
             args = data.args.concat(ev);
-            return data.evaluator.apply(element, args);
-            //return data.getter.apply(element, args);
+            return data.getter.apply(element, args);
         };
         //注册监听
-        touch(element).on(data.param, callback);
+        btouch(element).on(data.param, callback);
     };
 
     var userEvents = [
