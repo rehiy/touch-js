@@ -4,7 +4,7 @@
 
 (function() {
 
-    var bthook = function(data) {
+    var evhook = function(data) {
         setTimeout(function() {
             data.rollback && data.rollback();
         }, 0);
@@ -15,7 +15,7 @@
             return data.getter.apply(element, args);
         };
         //注册监听
-        btouch(element).on(data.param, callback);
+        touch(element).on(data.param, callback);
     };
 
     var userEvents = [
@@ -29,7 +29,7 @@
     ;
 
     userEvents.concat(mouseEvents, touchEvents).forEach(function(name) {
-        handle[name + 'Hook'] = bthook;
+        handle[name + 'Hook'] = evhook;
     });
 
 })();
