@@ -46,7 +46,3 @@ touch(document.getElementById('toucher'))
 2、原则上支持手机浏览器、现代浏览器、IE9+，但在PC上使用Mouse事件模拟手势，流畅度较差。
 
 3、事件触发时不阻止浏览器默认事件，若要用于拖动操作，或滑动更为细腻，可在swipe事件中使用“return false”阻止浏览器默认事件！
-
-#演示程序
-
-请使用移动设备或使用调试工具模拟移动设备查看 [demo](http://anrip.github.io/TouchJs/)
